@@ -383,7 +383,7 @@ BEGIN
     WHERE id = auth.uid() AND active = true AND role IN ('ADMIN', 'STAFF')
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 -- Helper function to check if user is admin
 CREATE OR REPLACE FUNCTION public.is_admin()
@@ -394,7 +394,7 @@ BEGIN
     WHERE id = auth.uid() AND active = true AND role = 'ADMIN'
   );
 END;
-$$ LANGUAGE plpgsql SECURITY DEFINER;
+$$ LANGUAGE plpgsql SECURITY DEFINER SET search_path = public, pg_temp;
 
 -- Policies for Authenticated Staff/Admin
 DO $$

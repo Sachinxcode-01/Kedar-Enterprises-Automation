@@ -14,6 +14,7 @@ import {
   Settings,
   LogOut,
   Sparkles,
+  BookOpen,
 } from 'lucide-react';
 
 export function Sidebar() {
@@ -25,6 +26,7 @@ export function Sidebar() {
     { name: 'Customers', href: '/customers', icon: Users },
     { name: 'Leads', href: '/leads', icon: Briefcase },
     { name: 'Automation', href: '/automation', icon: Bot },
+    { name: 'Knowledge Base', href: '/knowledge', icon: BookOpen },
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Privacy & Data', href: '/privacy', icon: ShieldCheck, highlight: true },
     { name: 'Audit Logs', href: '/audit-logs', icon: FileText },
