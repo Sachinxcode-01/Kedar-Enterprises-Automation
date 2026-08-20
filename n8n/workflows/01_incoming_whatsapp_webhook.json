@@ -1,4 +1,5 @@
 {
+  "id": "hnf9Q8uSeYaFAPJT",
   "name": "KE-WA-Main-Inbound",
   "nodes": [
     {
@@ -89,9 +90,9 @@
     },
     {
       "parameters": {
-        "workflowId": "KE-AI-10-AI-Router"
+        "workflowId": "K0cEUodJ7Y9UrOgx"
       },
-      "name": "Execute AI Router Sub-Workflow",
+      "name": "Execute KE-AI-Router Sub-Workflow",
       "type": "n8n-nodes-base.executeWorkflow",
       "typeVersion": 1,
       "position": [1700, 300]
@@ -132,9 +133,9 @@
       "main": [[{"node": "KE-AI-05-Knowledge-Retrieval", "type": "main", "index": 0}]]
     },
     "KE-AI-05-Knowledge-Retrieval": {
-      "main": [[{"node": "Execute AI Router Sub-Workflow", "type": "main", "index": 0}]]
+      "main": [[{"node": "Execute KE-AI-Router Sub-Workflow", "type": "main", "index": 0}]]
     },
-    "Execute AI Router Sub-Workflow": {
+    "Execute KE-AI-Router Sub-Workflow": {
       "main": [[{"node": "Mock Outbound WhatsApp Sender", "type": "main", "index": 0}]]
     }
   }
