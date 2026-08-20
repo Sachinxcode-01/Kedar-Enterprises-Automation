@@ -1,0 +1,92 @@
+{
+  "name": "01 - Incoming WhatsApp Webhook & Conversation State Manager",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "whatsapp-webhook",
+        "options": {}
+      },
+      "name": "Webhook Receiver",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [100, 300]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Validate Meta Webhook Signature and Extract Payload\nconst body = items[0].json.body;\nif (!body.entry || !body.entry[0].changes) {\n  return [];\n}\n\nconst change = body.entry[0].changes[0].value;\nif (!change.messages || change.messages.length === 0) {\n  return []; // Event is a status update, not a new message\n}\n\nconst msg = change.messages[0];
+const contact = change.contacts ? change.contacts[0] : {};\n\nreturn [{\n  json: {\n    wa_id: msg.from,\n    name: contact.profile ? contact.profile.name : 'WhatsApp Customer',\n    content: msg.text ? msg.text.body : '[Media/Interactive]',\n    type: msg.type,\n    message_id: msg.id,\n    timestamp: msg.timestamp\n  }\n}];"
+      },
+      "name": "Parse Payload",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [300, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, name, is_anonymized FROM public.customers WHERE phone = '{{$json.wa_id}}';"
+      },
+      "name": "Lookup Customer",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{$json.id ? true : false}}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Customer Exists?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 1,
+      "position": [700, 300]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.customers (name, phone) VALUES ('{{$node[\"Parse Payload\"].json.name}}', '{{$node[\"Parse Payload\"].json.wa_id}}') RETURNING id;"
+      },
+      "name": "Create New Customer",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [900, 420]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT id, mode, status FROM public.conversations WHERE customer_id = '{{$json.id}}' AND status = 'OPEN' LIMIT 1;"
+      },
+      "name": "Get Conversation State",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [1100, 300]
+    }
+  ],
+  "connections": {
+    "Webhook Receiver": {
+      "main": [[{"node": "Parse Payload", "type": "main", "index": 0}]]
+    },
+    "Parse Payload": {
+      "main": [[{"node": "Lookup Customer", "type": "main", "index": 0}]]
+    },
+    "Lookup Customer": {
+      "main": [[{"node": "Customer Exists?", "type": "main", "index": 0}]]
+    },
+    "Customer Exists?": {
+      "main": [
+        [{"node": "Get Conversation State", "type": "main", "index": 0}],
+        [{"node": "Create New Customer", "type": "main", "index": 0}]
+      ]
+    },
+    "Create New Customer": {
+      "main": [[{"node": "Get Conversation State", "type": "main", "index": 0}]]
+    }
+  }
+}

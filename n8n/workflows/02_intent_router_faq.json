@@ -1,0 +1,43 @@
+{
+  "name": "02 - Deterministic Intent Router & FAQ Matching Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT question, answer, keywords FROM public.faqs WHERE enabled = true;"
+      },
+      "name": "Fetch Active FAQs",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "functionCode": "// Match customer text against deterministic FAQ keywords\nconst text = items[0].json.incoming_text.toLowerCase();\nconst faqs = items[0].json.faqs || [];\n\nlet matchedAnswer = null;\nfor (const faq of faqs) {\n  const keywords = Array.isArray(faq.keywords) ? faq.keywords : JSON.parse(faq.keywords || '[]');\n  for (const kw of keywords) {\n    if (text.includes(kw.toLowerCase())) {\n      matchedAnswer = faq.answer;\n      break;\n    }\n  }\n  if (matchedAnswer) break;\n}\n\nreturn [{\n  json: {\n    found: !!matchedAnswer,\n    answer: matchedAnswer || 'Thank you for reaching Kedar Enterprises. Type 1 for Products, 2 for Pricing, 3 for Enquiry, 4 for Business Info, or 5 to Talk to Staff.'\n  }\n}];"
+      },
+      "name": "Keyword Matcher",
+      "type": "n8n-nodes-base.function",
+      "typeVersion": 1,
+      "position": [350, 200]
+    },
+    {
+      "parameters": {
+        "requestMethod": "POST",
+        "url": "https://graph.facebook.com/v19.0/{{$node[\"Config\"].json.phone_number_id}}/messages",
+        "options": {},
+        "bodyParametersUi": {
+          "parameter": [
+            {"name": "messaging_product", "value": "whatsapp"},
+            {"name": "to", "value": "={{$json.phone}}"},
+            {"name": "type", "value": "text"},
+            {"name": "text", "value": "{\"body\": \"{{$json.answer}}\"}"}
+          ]
+        }
+      },
+      "name": "Send Meta WhatsApp Reply",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 1,
+      "position": [600, 200]
+    }
+  ]
+}

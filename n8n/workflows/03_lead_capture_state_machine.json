@@ -1,0 +1,25 @@
+{
+  "name": "03 - Conversational Lead Capture State Machine",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.leads (customer_id, requirement, product, status) VALUES ('{{$json.customer_id}}', '{{$json.requirement}}', '{{$json.product}}', 'NEW') RETURNING id;"
+      },
+      "name": "Insert Lead Record",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [200, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.consent_records (customer_id, purpose, status, notice_version, source) VALUES ('{{$json.customer_id}}', 'WhatsApp Business Communication & Lead Qualification', 'GRANTED', 'v1.0-2024', 'WHATSAPP_OPTIN');"
+      },
+      "name": "Record DPDP Consent Entry",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 200]
+    }
+  ]
+}

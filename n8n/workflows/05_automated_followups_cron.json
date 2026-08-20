@@ -1,0 +1,31 @@
+{
+  "name": "05 - Automated 24h/72h Lead Template Follow-Up Scheduler",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "name": "Daily Cron Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT l.id AS lead_id, c.phone, c.name FROM public.leads l JOIN public.customers c ON l.customer_id = c.id WHERE l.status = 'NEW' AND l.created_at < NOW() - INTERVAL '24 hours' AND c.is_anonymized = false;"
+      },
+      "name": "Find Eligible Follow-up Leads",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [300, 200]
+    }
+  ]
+}

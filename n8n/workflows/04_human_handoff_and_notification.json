@@ -1,0 +1,25 @@
+{
+  "name": "04 - Human Handoff & Staff Dashboard Realtime Notification",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.conversations SET mode = 'HUMAN', unread_count = unread_count + 1, updated_at = NOW() WHERE id = '{{$json.conversation_id}}';"
+      },
+      "name": "Set Mode HUMAN",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [200, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.audit_logs (user_id, action, resource_type, resource_id, metadata) VALUES (NULL, 'HUMAN_TAKEOVER_REQUESTED', 'conversations', '{{$json.conversation_id}}', '{\"channel\":\"WhatsApp\"}');"
+      },
+      "name": "Log Handoff Audit Event",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [450, 200]
+    }
+  ]
+}

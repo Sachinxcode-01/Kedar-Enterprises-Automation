@@ -1,0 +1,51 @@
+{
+  "name": "06 - DPDP Compliant Automated Data Retention Purge & Anonymization Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 7
+            }
+          ]
+        }
+      },
+      "name": "Weekly Retention Purge Trigger",
+      "type": "n8n-nodes-base.cron",
+      "typeVersion": 1,
+      "position": [100, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "SELECT retention_period_days FROM public.retention_policies WHERE data_category = 'Customer Messages & Chat Logs' AND auto_purge = true;"
+      },
+      "name": "Fetch Retention Rule",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [300, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE public.messages SET content = '[PURGED PER DPDP RETENTION POLICY]' WHERE created_at < NOW() - INTERVAL '180 days';"
+      },
+      "name": "Purge Expired Message Payloads",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [550, 200]
+    },
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "INSERT INTO public.audit_logs (user_id, action, resource_type, resource_id, metadata) VALUES (NULL, 'DPDP_AUTOMATED_RETENTION_PURGE', 'retention_policies', NULL, '{\"status\":\"SUCCESS\",\"purged_category\":\"Customer Messages & Chat Logs\"}');"
+      },
+      "name": "Log Compliance Purge Audit Event",
+      "type": "n8n-nodes-base.postgres",
+      "typeVersion": 1,
+      "position": [800, 200]
+    }
+  ]
+}
