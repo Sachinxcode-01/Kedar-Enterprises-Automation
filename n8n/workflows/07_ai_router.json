@@ -1,6 +1,7 @@
 {
   "id": "K0cEUodJ7Y9UrOgx",
   "name": "KE-AI-Router",
+  "active": true,
   "nodes": [
     {
       "parameters": {

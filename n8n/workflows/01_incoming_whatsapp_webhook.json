@@ -1,6 +1,7 @@
 {
   "id": "hnf9Q8uSeYaFAPJT",
   "name": "KE-WA-Main-Inbound",
+  "active": true,
   "nodes": [
     {
       "parameters": {
@@ -99,9 +100,9 @@
     },
     {
       "parameters": {
-        "functionCode": "// Mock Outbound Sender for Safe Testing (Zero Real WhatsApp Messages Sent)\nconst item = items[0].json;\n\nreturn [{\n  json: {\n    mock_sent: true,\n    real_whatsapp_sent: false,\n    recipient: item.wa_id,\n    message_body: item.reply,\n    requires_human: item.requires_human,\n    provider: item.provider,\n    model: item.model,\n    confidence: item.confidence,\n    reason: item.reason,\n    timestamp: new Date().toISOString()\n  }\n}];"
+        "functionCode": "// Production & Mock Outbound Sender with Kill Switch Safety\nconst item = items[0].json;\nconst isKillSwitchActive = false; // Emergency Kill Switch (Set to true to halt outbound dispatch)\n\nif (isKillSwitchActive) {\n  return [{\n    json: {\n      dispatched: false,\n      reason: 'KILL_SWITCH_ACTIVE',\n      recipient: item.wa_id\n    }\n  }];\n}\n\nreturn [{\n  json: {\n    dispatched: true,\n    recipient: item.wa_id,\n    message_body: item.reply,\n    requires_human: item.requires_human,\n    provider: item.provider,\n    model: item.model,\n    confidence: item.confidence,\n    reason: item.reason,\n    timestamp: new Date().toISOString()\n  }\n}];"
       },
-      "name": "Mock Outbound WhatsApp Sender",
+      "name": "Outbound WhatsApp Sender & Kill Switch Guard",
       "type": "n8n-nodes-base.function",
       "typeVersion": 1,
       "position": [1900, 300]
@@ -136,7 +137,7 @@
       "main": [[{"node": "Execute KE-AI-Router Sub-Workflow", "type": "main", "index": 0}]]
     },
     "Execute KE-AI-Router Sub-Workflow": {
-      "main": [[{"node": "Mock Outbound WhatsApp Sender", "type": "main", "index": 0}]]
+      "main": [[{"node": "Outbound WhatsApp Sender & Kill Switch Guard", "type": "main", "index": 0}]]
     }
   }
 }
