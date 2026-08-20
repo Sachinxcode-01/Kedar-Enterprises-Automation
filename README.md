@@ -1,6 +1,6 @@
 # Kedar Enterprises — WhatsApp Automation & DPDP Act 2023 Compliance Platform
 
-![Kedar Enterprises WhatsApp Automation Platform](https://raw.githubusercontent.com/Sachinxcode-01/Kedar-Enterprises-Automation/main/docs/banner.jpg)
+![Kedar Enterprises WhatsApp Automation Platform](./assets/banner.jpg)
 
 [![Next.js 14](https://img.shields.io/badge/Next.js-14.2-black?style=for-the-badge&logo=next.js)](https://nextjs.org/)
 [![Supabase](https://img.shields.io/badge/Supabase-Database%20%26%20Auth-3ECF8E?style=for-the-badge&logo=supabase)](https://supabase.com/)
