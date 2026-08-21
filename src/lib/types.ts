@@ -36,6 +36,9 @@ export interface Conversation {
   unread_count: number;
   last_message: string;
   last_message_at: string;
+  intent?: string;
+  confidence?: number;
+  urgency?: 'LOW' | 'MEDIUM' | 'HIGH' | 'CRITICAL';
 }
 
 export interface Message {
@@ -44,9 +47,11 @@ export interface Message {
   direction: 'INBOUND' | 'OUTBOUND';
   message_type: 'text' | 'template' | 'image' | 'interactive';
   content: string;
-  sender_type: 'CUSTOMER' | 'BOT' | 'STAFF';
+  sender_type: 'CUSTOMER' | 'BOT' | 'STAFF' | 'SYSTEM';
   status: 'SENT' | 'DELIVERED' | 'READ' | 'FAILED';
   created_at: string;
+  confidence?: number;
+  sources?: string[];
 }
 
 export type LeadStatus = 'NEW' | 'CONTACTED' | 'QUALIFIED' | 'FOLLOW_UP' | 'CONVERTED' | 'LOST';
@@ -62,6 +67,8 @@ export interface Lead {
   assigned_to?: string;
   assigned_name?: string;
   notes: string;
+  score?: number;
+  follow_up_date?: string;
   created_at: string;
 }
 
@@ -73,6 +80,41 @@ export interface FAQ {
   category: string;
   enabled: boolean;
   match_count: number;
+  status?: 'APPROVED' | 'PENDING' | 'REJECTED';
+}
+
+export interface ProductItem {
+  id: string;
+  sku: string;
+  name: string;
+  category: string;
+  description: string;
+  unit: string;
+  price?: number;
+  status: 'APPROVED' | 'DRAFT';
+  updated_at?: string;
+}
+
+export interface ServiceItem {
+  id: string;
+  name: string;
+  category: string;
+  description: string;
+  scope: string;
+  sla: string;
+  status: 'APPROVED' | 'DRAFT';
+  updated_at?: string;
+}
+
+export interface PriceItem {
+  id: string;
+  item_name: string;
+  price: number;
+  currency: string;
+  unit: string;
+  pricing_type: 'STANDARD' | 'TIERED' | 'SUBSCRIPTION' | 'CUSTOM';
+  status: 'AUTHORITATIVE' | 'PENDING_REVIEW';
+  updated_at?: string;
 }
 
 export interface AutomationRule {
@@ -83,6 +125,7 @@ export interface AutomationRule {
   enabled: boolean;
   success_count: number;
   failure_count: number;
+  latency_ms?: number;
 }
 
 export interface ConsentRecord {
@@ -128,6 +171,37 @@ export interface AuditLog {
   metadata: string;
   ip_address: string;
   created_at: string;
+}
+
+export interface ErrorLog {
+  id: string;
+  severity: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  service: string;
+  message: string;
+  timestamp: string;
+  sanitized_trace: string;
+  resolved: boolean;
+}
+
+export interface SystemHealthItem {
+  name: string;
+  service: string;
+  status: 'OPERATIONAL' | 'DEGRADED' | 'OFFLINE';
+  latency_ms: number;
+  last_check: string;
+  uptime: string;
+  description: string;
+}
+
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  category: 'SYSTEM' | 'AI' | 'LEAD' | 'CUSTOMER' | 'HANDOFF' | 'SECURITY' | 'DPDP' | 'WORKFLOW';
+  priority: 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
+  read: boolean;
+  created_at: string;
+  target_url?: string;
 }
 
 export interface Vendor {
