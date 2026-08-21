@@ -90,6 +90,7 @@ export const updateSession = async (request: NextRequest) => {
 
       // Check admin-only route permissions
       const isAdminRoute =
+        pathname.startsWith("/users") ||
         pathname.startsWith("/settings") ||
         pathname.startsWith("/audit-logs") ||
         pathname.startsWith("/errors") ||

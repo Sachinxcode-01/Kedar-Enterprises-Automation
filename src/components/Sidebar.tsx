@@ -58,6 +58,8 @@ export function Sidebar({ collapsed: propCollapsed, onToggleCollapse }: SidebarP
     { name: 'Analytics', href: '/analytics', icon: BarChart3 },
     { name: 'Privacy & DPDP', href: '/privacy', icon: ShieldCheck, highlight: true },
     { name: 'Notifications', href: '/notifications', icon: Bell },
+    { name: 'User Management', href: '/users', icon: Users, highlightRole: 'ADMIN' },
+    { name: 'Security Center', href: '/security', icon: ShieldCheck },
     { name: 'Audit Logs', href: '/audit-logs', icon: FileText },
     { name: 'Errors & Health', href: '/errors', icon: Zap },
     { name: 'Settings', href: '/settings', icon: Settings },

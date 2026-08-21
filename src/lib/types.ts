@@ -14,6 +14,7 @@ export interface Customer {
   phone: string;
   location: string;
   tags: string[];
+  dpdp_consent?: boolean;
   is_anonymized: boolean;
   anonymized_at?: string;
   created_at: string;

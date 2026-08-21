@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import {
   Bell,
@@ -59,6 +60,10 @@ export function Header() {
         return 'Privacy & DPDP';
       case '/notifications':
         return 'Notifications';
+      case '/users':
+        return 'User Management';
+      case '/security':
+        return 'Security Center';
       case '/audit-logs':
         return 'Audit Logs';
       case '/errors':
@@ -152,15 +157,20 @@ export function Header() {
 
           {/* User Profile */}
           <div className="flex items-center gap-2.5 pl-2 border-l border-slate-800">
-            <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-600 flex items-center justify-center text-slate-200 font-bold text-xs shadow-sm">
+            <Link
+              href="/security"
+              title="Account Security"
+              className="w-8 h-8 rounded-full bg-gradient-to-tr from-slate-800 to-slate-700 border border-slate-600 flex items-center justify-center text-slate-200 font-bold text-xs shadow-sm hover:border-brand-500 transition-colors"
+            >
               {currentUser === 'ADMIN' ? 'KA' : 'RS'}
-            </div>
+            </Link>
             <div className="hidden xl:block text-left">
-              <div className="text-xs font-bold text-slate-200 leading-none">
+              <Link href="/security" className="text-xs font-bold text-slate-200 leading-none hover:text-white transition-colors">
                 {currentUser === 'ADMIN' ? 'Kedar Admin' : 'Rahul Sharma'}
-              </div>
-              <div className="text-[10px] text-brand-400 font-mono mt-1">
-                {currentUser === 'ADMIN' ? 'Full Control' : 'Sales & Support'}
+              </Link>
+              <div className="flex items-center gap-1 text-[10px] text-brand-400 font-mono mt-1">
+                <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+                <span>{currentUser === 'ADMIN' ? 'Full Control' : 'Sales & Support'}</span>
               </div>
             </div>
           </div>
