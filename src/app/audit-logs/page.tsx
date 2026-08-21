@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { SecurityStatusCard } from '@/components/ui/SecurityStatusCard';
 import { initialAuditLogs } from '@/lib/data';
 import { FileText, Shield, User, Clock, Terminal, ChevronDown, ChevronRight, Search, Lock } from 'lucide-react';
 
@@ -120,6 +121,9 @@ export default function AuditLogsPage() {
           </tbody>
         </table>
       </div>
+
+      {/* Security Status Posture */}
+      <SecurityStatusCard />
     </div>
   );
 }

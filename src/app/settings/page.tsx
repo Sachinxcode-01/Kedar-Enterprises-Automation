@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
+import { SecurityStatusCard } from '@/components/ui/SecurityStatusCard';
 import {
   Settings as SettingsIcon,
   Key,
@@ -151,6 +152,9 @@ export default function SettingsPage() {
           </div>
         </div>
       </div>
+
+      {/* Security Status Posture */}
+      <SecurityStatusCard />
     </div>
   );
 }
